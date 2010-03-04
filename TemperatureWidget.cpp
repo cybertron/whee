@@ -14,7 +14,7 @@ void TemperatureWidget::Update()
    if (process && process->state() != QProcess::NotRunning)
       process->kill(); // If it's still running from last time we need to end it immediately
    
-   QString qcommand = "sensors | grep 'Core " + QString::number(core) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
+   QString qcommand = "sensors " + QString(chip.c_str()) + " | grep '" + QString(tempid.c_str()) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
    qcommand = "sh -c \"" + qcommand + "\"";
    process = QProcessPtr(new QProcess());
    QObject::connect(&(*process), SIGNAL(readyReadStandardOutput()), this, SLOT(ReadOutput()));

@@ -424,7 +424,8 @@ void whee::CreateTemperatureWidget(const IniReader& curr, int offx, int offy)
    curr.ReadLine(format, "Format");
    w->format = QString(format.c_str());
    
-   curr.Read(w->core, "Core");
+   curr.ReadLine(w->chip, "Chip");
+   curr.ReadLine(w->tempid, "ID");
    curr.Read(w->max, "Max");
    
    widgets.push_back(w);

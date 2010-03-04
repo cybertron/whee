@@ -17,7 +17,7 @@ class TemperatureWidget : public QObject, public WidgetContainer
       TemperatureWidget(QLabel*);
       virtual void Update();
       
-      int core;
+      string chip, tempid;
       float max;
       
    public slots:
