@@ -17,7 +17,7 @@ class whee : public QMainWindow
 {
    Q_OBJECT
    public:
-      whee(int argc, char** argv);
+      whee(string);
       virtual ~whee();
    
    public slots:

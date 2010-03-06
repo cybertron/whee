@@ -18,62 +18,54 @@
 using std::cout;
 using std::endl;
 
-whee::whee(int argc, char** argv) : background(NULL)
+whee::whee(string filename) : background(NULL)
 {
    setWindowFlags(Qt::FramelessWindowHint);
    setAttribute(Qt::WA_TranslucentBackground);
    
-   if (argc != 2)
-   {
-      cout << "Invalid number of arguments" << endl;
-   }
-   else
-   {
-      string filename = argv[1];
-      IniReader read(filename);
+   IniReader read(filename);
+   
+   ssize_t x, y, width, height;
+   size_t interval = 1000;
+   string strut = "";
+   read.Read(x, "Position", 0);
+   read.Read(y, "Position", 1);
+   read.Read(width, "Dimensions", 0);
+   read.Read(height, "Dimensions", 1);
+   read.Read(interval, "Interval");
+   read.Read(strut, "Strut");
+   
+   string name;
+   int buffer = 0;
+   fontname = "Arial";
+   read.ReadLine(fontname, "Font");
+   fontsize = 12;
+   read.Read(fontsize, "FontSize");
+   
+   fontweight = QFont::Normal;
+   read.Read(buffer, "Bold");
+   if (buffer > 0)
+      fontweight = QFont::Bold;
+   
+   fontitalic = false;
+   buffer = 0;
+   read.Read(buffer, "Italic");
+   if (buffer > 0)
+      fontitalic = true;
+   
+   SetXProps(x, y, width, height, strut);
+   
+   setGeometry(x, y, width, height);
+   
+   GenUnitMap();
       
-      ssize_t x, y, width, height;
-      size_t interval = 1000;
-      string strut = "";
-      read.Read(x, "Position", 0);
-      read.Read(y, "Position", 1);
-      read.Read(width, "Dimensions", 0);
-      read.Read(height, "Dimensions", 1);
-      read.Read(interval, "Interval");
-      read.Read(strut, "Strut");
-      
-      string name;
-      int buffer = 0;
-      fontname = "Arial";
-      read.ReadLine(fontname, "Font");
-      fontsize = 12;
-      read.Read(fontsize, "FontSize");
-      
-      fontweight = QFont::Normal;
-      read.Read(buffer, "Bold");
-      if (buffer > 0)
-         fontweight = QFont::Bold;
-      
-      fontitalic = false;
-      buffer = 0;
-      read.Read(buffer, "Italic");
-      if (buffer > 0)
-         fontitalic = true;
-      
-      SetXProps(x, y, width, height, strut);
-      
-      setGeometry(x, y, width, height);
-      
-      GenUnitMap();
-       
-      background = new QLabel(this);
-      
-      ReadNode(read, 0, 0);
-      
-      RunUpdates();
-      QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
-      timer.start(interval);
-   }
+   background = new QLabel(this);
+   
+   ReadNode(read, 0, 0);
+   
+   RunUpdates();
+   QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
+   timer.start(interval);
 }
 
 whee::~whee() {}
