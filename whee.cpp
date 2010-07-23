@@ -33,6 +33,8 @@ whee::whee(string filename) : background(NULL)
    read.Read(width, "Dimensions", 0);
    read.Read(height, "Dimensions", 1);
    read.Read(interval, "Interval");
+   if (interval < 1000)
+      cout << "Warning: Interval < 1000 may cause some sensors to behave improperly" << endl;
    read.Read(strut, "Strut");
    
    string name;
@@ -53,10 +55,6 @@ whee::whee(string filename) : background(NULL)
    if (buffer > 0)
       fontitalic = true;
    
-   SetXProps(x, y, width, height, strut);
-   
-   setGeometry(x, y, width, height);
-   
    GenUnitMap();
       
    background = new QLabel(this);
@@ -66,6 +64,12 @@ whee::whee(string filename) : background(NULL)
    RunUpdates();
    QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
    timer.start(interval);
+   
+   SetXProps(x, y, width, height, strut);
+   
+   show();
+   
+   setGeometry(x, y, width, height);
 }
 
 whee::~whee() {}
@@ -514,6 +518,7 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
    Atom net_wm_strut = XInternAtom(display, "_NET_WM_STRUT", false);
    Atom net_wm_strut_partial = XInternAtom(display, "_NET_WM_STRUT_PARTIAL", false);
    Atom net_wm_state = XInternAtom(display, "_NET_WM_STATE", false);
+   Atom net_wm_state_add = XInternAtom(display, "_NET_WM_STATE_ADD", false);
    Atom net_wm_state_sticky = XInternAtom(display, "_NET_WM_STATE_STICKY", false);
    Atom net_wm_state_below = XInternAtom(display, "_NET_WM_STATE_BELOW", false);
    Atom net_wm_state_skip_taskbar = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", false);
@@ -521,17 +526,20 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
    Atom net_wm_window_type_desktop = XInternAtom(display, "_NET_WM_TYPE_DESKTOP", false);
    Atom net_wm_desktop = XInternAtom(display, "_NET_WM_DESKTOP", false);
    
-   long atoms[3];
-   atoms[0] = net_wm_state_sticky;
-   atoms[1] = net_wm_state_skip_taskbar;
-   atoms[2] = net_wm_state_below;
-   XChangeProperty(display, window, net_wm_state, XA_ATOM, 32, PropModeReplace, (unsigned char*)atoms, 3);
+   long atoms[5];
+   atoms[0] = net_wm_state_add;
+   atoms[1] = net_wm_state_sticky;
+   atoms[2] = net_wm_state_skip_taskbar;
+   atoms[3] = net_wm_state_below;
+   atoms[4] = 1;
+   XChangeProperty(display, window, net_wm_state, XA_ATOM, 32, PropModeReplace, (unsigned char*)atoms, 5);
    
    long data[12];
    
    // Apparently KDE doesn't honor sticky state
    data[0] = 0xFFFFFFFF;
-   XChangeProperty(display, window, net_wm_desktop, XA_CARDINAL, 32, PropModeReplace, (unsigned char*)data, 1);
+   data[1] = 1;
+   XChangeProperty(display, window, net_wm_desktop, XA_CARDINAL, 32, PropModeReplace, (unsigned char*)data, 2);
    
    QString qstrut = strut.c_str();
    qstrut = qstrut.toLower();
