@@ -1,0 +1,16 @@
+Position 525 900
+Dimensions 325 150
+Interval 3000
+Font Monospace
+FontSize 8
+Widget
+   Type Image
+   Filename BasicBG.png
+   Position 0 0
+   Dimensions 375 250
+Widget
+   Type Command
+   Command pwrstat -status | egrep 'State|Supply by|Utility Voltage|Output Voltage|Battery Capacity|Load|Remaining Runtime|Line Interaction' | sed -e 's/^\t*//'
+   Position 10 10
+   Dimensions 1000 1000
+   FGColor 255 255 255

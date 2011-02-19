@@ -1,0 +1,16 @@
+Position 850 900
+Dimensions 300 150
+Interval 3000
+Font Monospace
+FontSize 8
+Widget
+   Type Image
+   Filename BasicBG.png
+   Position 0 0
+   Dimensions 375 250
+Widget
+   Type Command
+   Command cat /proc/mdstat | egrep 'UU|raid1'
+   Position 10 10
+   Dimensions 1000 1000
+   FGColor 255 255 255

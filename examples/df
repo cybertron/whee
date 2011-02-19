@@ -1,0 +1,17 @@
+Position 100 900
+Dimensions 425 250
+Interval 3000
+Widget
+   Type Image
+   Filename BasicBG.png
+   Position 0 0
+   Dimensions 500 500
+Widget
+   Type Command
+   Command df -h
+   Position 10 10
+   Dimensions 1000 1000
+   FGColor 255 255 255
+   //Font Bitstream Vera Sans Mono
+   Font Monospace
+   FontSize 8
