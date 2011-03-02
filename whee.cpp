@@ -23,7 +23,7 @@ whee::whee(string filename) : background(NULL)
    setWindowFlags(Qt::FramelessWindowHint);
    setAttribute(Qt::WA_TranslucentBackground);
    
-   IniReader read(filename);
+   NTreeReader read(filename);
    
    ssize_t x, y, width, height;
    size_t interval = 1000;
@@ -75,11 +75,11 @@ whee::whee(string filename) : background(NULL)
 whee::~whee() {}
 
 
-void whee::ReadNode(const IniReader& read, int offx, int offy)
+void whee::ReadNode(const NTreeReader& read, int offx, int offy)
 {
    for (size_t i = 0; i < read.NumChildren(); ++i)
    {
-      const IniReader& curr = read.GetItem(i);
+      const NTreeReader& curr = read.GetItem(i);
       string type;
       curr.Read(type, "Type");
       QString qtype(type.c_str());
@@ -128,7 +128,7 @@ void whee::ReadNode(const IniReader& read, int offx, int offy)
 }
 
 
-void whee::CreateTextWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateTextWidget(const NTreeReader& curr, int offx, int offy)
 {
    string text;
    curr.ReadLine(text, "Text");
@@ -142,7 +142,7 @@ void whee::CreateTextWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateImageWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateImageWidget(const NTreeReader& curr, int offx, int offy)
 {
    string filename;
    curr.ReadLine(filename, "Filename");
@@ -154,7 +154,7 @@ void whee::CreateImageWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateMemoryWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateMemoryWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -218,7 +218,7 @@ void whee::CreateMemoryWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateNetworkWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateNetworkWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -263,7 +263,7 @@ void whee::CreateNetworkWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateCPUWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateCPUWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -315,7 +315,7 @@ void whee::CreateCPUWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateCommandWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateCommandWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -335,7 +335,7 @@ void whee::CreateCommandWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateDiskWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateDiskWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -388,7 +388,7 @@ void whee::CreateDiskWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::CreateTemperatureWidget(const IniReader& curr, int offx, int offy)
+void whee::CreateTemperatureWidget(const NTreeReader& curr, int offx, int offy)
 {
    string type;
    curr.Read(type, "SubType");
@@ -428,7 +428,7 @@ void whee::CreateTemperatureWidget(const IniReader& curr, int offx, int offy)
 }
 
 
-void whee::SetLabelGeometry(const IniReader& curr, QLabel* label, int offx, int offy)
+void whee::SetLabelGeometry(const NTreeReader& curr, QLabel* label, int offx, int offy)
 {
    ssize_t x = 0, y = 0, width = 100, height = 100;
    curr.Read(x, "Position", 0);
@@ -442,7 +442,7 @@ void whee::SetLabelGeometry(const IniReader& curr, QLabel* label, int offx, int 
 }
 
 
-void whee::SetLabelPalette(const IniReader& curr, QLabel* label)
+void whee::SetLabelPalette(const NTreeReader& curr, QLabel* label)
 {
    int fgr = 0, fgg = 0, fgb = 0;
    int bgr = 255, bgg = 255, bgb = 255;
@@ -460,7 +460,7 @@ void whee::SetLabelPalette(const IniReader& curr, QLabel* label)
 }
 
 
-void whee::SetLabelFont(const IniReader& curr, QLabel* label)
+void whee::SetLabelFont(const NTreeReader& curr, QLabel* label)
 {
    string font = fontname;
    int buffer = 0;
@@ -481,7 +481,7 @@ void whee::SetLabelFont(const IniReader& curr, QLabel* label)
 }
 
 
-void whee::SetLabelPixmap(const IniReader& curr, QLabel* label)
+void whee::SetLabelPixmap(const NTreeReader& curr, QLabel* label)
 {
    string filename;
    curr.ReadLine(filename, "Filename");
@@ -490,7 +490,7 @@ void whee::SetLabelPixmap(const IniReader& curr, QLabel* label)
 }
 
 
-void whee::SetWidgetOrientation(const IniReader& curr, WidgetContainer& w)
+void whee::SetWidgetOrientation(const NTreeReader& curr, WidgetContainer& w)
 {
    string o;
    curr.Read(o, "Orientation");

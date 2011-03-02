@@ -1,5 +1,4 @@
 #include "NetworkWidget.h"
-#include "IniReader.h"
 #include <QTextStream>
 #include <QFile>
 #include <iostream>

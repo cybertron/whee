@@ -1,5 +1,5 @@
 #include "CPUWidget.h"
-#include "IniReader.h"
+#include "NTreeReader.h"
 
 CPUWidget::CPUWidget(QLabel* l) : lastjiffies(0), lasttotal(0)
 {
@@ -8,7 +8,7 @@ CPUWidget::CPUWidget(QLabel* l) : lastjiffies(0), lasttotal(0)
 
 void CPUWidget::Update()
 {
-   IniReader read("/proc/stat");
+   NTreeReader read("/proc/stat");
    
    size_t val;
    size_t user, nice, system, idle, io, irq, sirq, total;
