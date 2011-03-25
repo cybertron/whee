@@ -1,5 +1,5 @@
 #include "MemoryWidget.h"
-#include "IniReader.h"
+#include "NTreeReader.h"
 #include <iostream>
 #include <sys/sysinfo.h>
 
@@ -13,8 +13,8 @@ MemoryWidget::MemoryWidget(QLabel* l) : stat(Free)
 
 void MemoryWidget::Update()
 {
-   // Cool, /proc/meminfo is parsable by IniReader
-   IniReader read("/proc/meminfo");
+   // Cool, /proc/meminfo is parsable by NTreeReader
+   NTreeReader read("/proc/meminfo");
    size_t val;
    size_t total, free, buffer, cache, totalswap, freeswap;
    float percent;

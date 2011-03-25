@@ -7,7 +7,7 @@
 #include <QtGui/QLabel>
 #include <QTimer>
 #include <QFont>
-#include "IniReader.h"
+#include "NTreeReader.h"
 #include "WidgetContainer.h"
 
 using std::list;
@@ -34,21 +34,21 @@ class whee : public QMainWindow
       bool fontitalic;
       QLabel* background;
       
-      void ReadNode(const IniReader&, int, int);
-      void CreateTextWidget(const IniReader&, int, int);
-      void CreateImageWidget(const IniReader&, int, int);
-      void CreateMemoryWidget(const IniReader&, int, int);
-      void CreateNetworkWidget(const IniReader&, int, int);
-      void CreateCPUWidget(const IniReader&, int, int);
-      void CreateCommandWidget(const IniReader&, int, int);
-      void CreateDiskWidget(const IniReader&, int, int);
-      void CreateTemperatureWidget(const IniReader&, int, int);
+      void ReadNode(const NTreeReader&, int, int);
+      void CreateTextWidget(const NTreeReader&, int, int);
+      void CreateImageWidget(const NTreeReader&, int, int);
+      void CreateMemoryWidget(const NTreeReader&, int, int);
+      void CreateNetworkWidget(const NTreeReader&, int, int);
+      void CreateCPUWidget(const NTreeReader&, int, int);
+      void CreateCommandWidget(const NTreeReader&, int, int);
+      void CreateDiskWidget(const NTreeReader&, int, int);
+      void CreateTemperatureWidget(const NTreeReader&, int, int);
       
-      void SetLabelGeometry(const IniReader&, QLabel*, int, int);
-      void SetLabelPalette(const IniReader&, QLabel*);
-      void SetLabelFont(const IniReader&, QLabel*);
-      void SetLabelPixmap(const IniReader&, QLabel*);
-      void SetWidgetOrientation(const IniReader&, WidgetContainer&);
+      void SetLabelGeometry(const NTreeReader&, QLabel*, int, int);
+      void SetLabelPalette(const NTreeReader&, QLabel*);
+      void SetLabelFont(const NTreeReader&, QLabel*);
+      void SetLabelPixmap(const NTreeReader&, QLabel*);
+      void SetWidgetOrientation(const NTreeReader&, WidgetContainer&);
       void GenUnitMap();
       void SetXProps(int, int, int, int, string);
       void UpdateBackground();

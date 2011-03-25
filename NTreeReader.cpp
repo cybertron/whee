@@ -1,10 +1,31 @@
-#include "IniReader.h"
+// @Begin License@
+// This file is part of Coldest.
+//
+// Coldest is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Coldest is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Coldest.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2008, 2011 Ben Nemec
+// @End License@
 
-IniReader::IniReader(int lev) : level(lev), name(""), path("")
+
+#include "NTreeReader.h"
+#include <iostream>
+
+NTreeReader::NTreeReader(int lev, const string& n) : level(lev), name(n), path("")
 {
 }
 
-IniReader::IniReader(string filename) : level(0), name(""), path(filename)
+NTreeReader::NTreeReader(string filename) : level(0), name(""), path(filename)
 {
    if (filename == "") return; // Don't think this is necessary anymore, but it doesn't hurt
 
@@ -12,7 +33,7 @@ IniReader::IniReader(string filename) : level(0), name(""), path(filename)
    
    if (in.fail())
    {
-      cout << "Failed to open file " << filename << endl;
+      std::cerr << "Failed to open file " << filename << endl;
       return;
    }
 
@@ -28,13 +49,13 @@ IniReader::IniReader(string filename) : level(0), name(""), path(filename)
 }
 
 
-void IniReader::Parse(istringstream& in)
+void NTreeReader::Parse(istringstream& in)
 {
    string currline = "";
    size_t linelevel = level;
    string valname = "";
+   string nextname = "";
    istringstream line;
-   bool firstline = true;
    size_t strpos = 0;
 
    while(getline(in, currline))
@@ -45,15 +66,9 @@ void IniReader::Parse(istringstream& in)
          continue;
       }
 
-      if (firstline)
-      {
-         name = currline.substr(linelevel);
-         firstline = false;
-      }
-
       if (linelevel > level)
       {
-         IniReaderPtr newreader(new IniReader(linelevel));
+         NTreeReaderPtr newreader(new NTreeReader(linelevel, nextname));
          in.seekg(strpos);
          newreader->Parse(in);
          children.push_back(newreader);
@@ -71,31 +86,32 @@ void IniReader::Parse(istringstream& in)
          values[valname] = currline;
       }
       strpos = in.tellg();
+      nextname = currline.substr(linelevel);
    }
    // No need for a return statement here anymore, but the comment is useful.
    return; // Means we reached the end of the file
 }
 
 
-const IniReader& IniReader::GetItem(const int num) const
+const NTreeReader& NTreeReader::GetItem(const int num) const
 {
    return *children.at(num);
 }
 
 
-const IniReader& IniReader::operator()(const int num) const
+const NTreeReader& NTreeReader::operator()(const int num) const
 {
    return GetItem(num);
 }
 
 
-const IniReader& IniReader::GetItemByName(const string name) const
+const NTreeReader& NTreeReader::GetItemByName(const string name) const
 {
    return GetItem(GetItemIndex(name));
 }
 
 
-int IniReader::GetItemIndex(const string name) const
+int NTreeReader::GetItemIndex(const string name) const
 {
    for (size_t i = 0; i < children.size(); ++i)
    {
@@ -106,7 +122,7 @@ int IniReader::GetItemIndex(const string name) const
 }
 
 
-string IniReader::ReadLine(string& ret, const string name) const
+string NTreeReader::ReadLine(string& ret, const string name) const
 {
    if (HaveValue(name, 0))
    {
@@ -122,7 +138,7 @@ string IniReader::ReadLine(string& ret, const string name) const
 }
 
 
-string IniReader::ReadVal(const string& line, const int num) const
+string NTreeReader::ReadVal(const string& line, const int num) const
 {
    istringstream readval(line);
    int i = -1; // Always need to read at least two values even if they pass in 0
@@ -137,7 +153,7 @@ string IniReader::ReadVal(const string& line, const int num) const
 }
 
 
-bool IniReader::HaveValue(const string& name, const int num) const
+bool NTreeReader::HaveValue(const string& name, const int num) const
 {
    bool retval = values.find(name) != values.end();
    if (retval)
@@ -149,19 +165,17 @@ bool IniReader::HaveValue(const string& name, const int num) const
          ++i;
       if (i != num) retval = false; // This may not work as intended, testing is needed
    }
-   //if (!retval)
-   //   cout << "Warning: Attempt to read non-existent value " << name << endl;
    return retval;
 }
 
 
-size_t IniReader::NumChildren() const
+size_t NTreeReader::NumChildren() const
 {
    return children.size();
 }
 
 
-string IniReader::GetPath() const
+string NTreeReader::GetPath() const
 {
    return path;
 }
