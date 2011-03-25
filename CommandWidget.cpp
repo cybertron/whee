@@ -12,7 +12,7 @@ CommandWidget::CommandWidget(QLabel* l)
 void CommandWidget::Update()
 {
    if (process && process->state() != QProcess::NotRunning)
-      process->kill(); // If it's still running from last time we need to end it immediately
+      return;
    
    QString qcommand = command.c_str();
    qcommand = "sh -c \"" + qcommand + "\"";

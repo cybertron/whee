@@ -12,7 +12,7 @@ TemperatureWidget::TemperatureWidget(QLabel* l)
 void TemperatureWidget::Update()
 {
    if (process && process->state() != QProcess::NotRunning)
-      process->kill(); // If it's still running from last time we need to end it immediately
+      return;
    
    QString qcommand = "sensors " + QString(chip.c_str()) + " | grep '" + QString(tempid.c_str()) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
    qcommand = "sh -c \"" + qcommand + "\"";
