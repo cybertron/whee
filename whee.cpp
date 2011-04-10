@@ -214,6 +214,8 @@ void whee::CreateMemoryWidget(const NTreeReader& curr, int offx, int offy)
    curr.Read(unit, "Unit");
    w.unit = unitmap[unit];
    
+   curr.Read(w.interval, "Interval");
+   
    widgets.push_back(WidgetContainerPtr(new MemoryWidget(w)));
 }
 
@@ -259,6 +261,8 @@ void whee::CreateNetworkWidget(const NTreeReader& curr, int offx, int offy)
    
    curr.Read(w.interface, "Interface");
    curr.Read(w.max, "Max");
+   curr.Read(w.interval, "Interval");
+   
    widgets.push_back(WidgetContainerPtr(new NetworkWidget(w)));
 }
 
@@ -311,6 +315,8 @@ void whee::CreateCPUWidget(const NTreeReader& curr, int offx, int offy)
    curr.ReadLine(format, "Format");
    w.format = QString(format.c_str());
    
+   curr.Read(w.interval, "Interval");
+   
    widgets.push_back(WidgetContainerPtr(new CPUWidget(w)));
 }
 
@@ -330,6 +336,8 @@ void whee::CreateCommandWidget(const NTreeReader& curr, int offx, int offy)
    // Have to use a pointer to this one because it inherits from QObject
    CommandWidgetPtr w(new CommandWidget(label));
    curr.ReadLine(w->command, "Command");
+   
+   curr.Read(w->interval, "Interval");
    
    widgets.push_back(w);
 }
@@ -384,6 +392,8 @@ void whee::CreateDiskWidget(const NTreeReader& curr, int offx, int offy)
    curr.Read(unit, "Unit");
    w.unit = unitmap[unit];
    
+   curr.Read(w.interval, "Interval");
+   
    widgets.push_back(WidgetContainerPtr(new DiskWidget(w)));
 }
 
@@ -423,6 +433,7 @@ void whee::CreateTemperatureWidget(const NTreeReader& curr, int offx, int offy)
    curr.ReadLine(w->chip, "Chip");
    curr.ReadLine(w->tempid, "ID");
    curr.Read(w->max, "Max");
+   curr.Read(w->interval, "Interval");
    
    widgets.push_back(w);
 }
@@ -505,7 +516,12 @@ void whee::RunUpdates()
 {
    for (list<WidgetContainerPtr>::iterator i = widgets.begin(); i != widgets.end(); ++i)
    {
-      (*i)->Update();
+      (*i)->remaining -= timer.interval();
+      if ((*i)->remaining <= 0)
+      {
+         (*i)->Update();
+         (*i)->remaining = (*i)->interval;
+      }
    }
 }
 

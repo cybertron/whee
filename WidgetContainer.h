@@ -23,9 +23,11 @@ class WidgetContainer
       Type type;
       enum Orientation{Vertical, Horizontal};
       Orientation orientation;
+      long interval;
+      long remaining;
 
       WidgetContainer(QLabel*);
-      WidgetContainer() : type(Text), orientation(Vertical), lastpercent(0.f) {}
+      WidgetContainer() : type(Text), orientation(Vertical), lastpercent(0.f), interval(0), remaining(0) {}
       // By default a no-op so this can be used directly for static widgets
       virtual void Update() {}
       

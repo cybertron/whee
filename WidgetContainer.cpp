@@ -10,7 +10,11 @@ unsigned long WidgetContainer::EBv = WidgetContainer::PB() * 1024;
 unsigned long WidgetContainer::ZBv = WidgetContainer::EB() * 1024;
 unsigned long WidgetContainer::YBv = WidgetContainer::ZB() * 1024;
 
-WidgetContainer::WidgetContainer(QLabel* l) : label(l), type(Text), orientation(Vertical)
+WidgetContainer::WidgetContainer(QLabel* l) : label(l),
+                                              type(Text),
+                                              orientation(Vertical),
+                                              interval(0),
+                                              remaining(0)
 {
 }
 
