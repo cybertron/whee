@@ -3,7 +3,6 @@
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QApplication>
-#include <QPaintEvent>
 #include <iostream>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -455,18 +454,20 @@ void whee::SetLabelGeometry(const NTreeReader& curr, QLabel* label, int offx, in
 
 void whee::SetLabelPalette(const NTreeReader& curr, QLabel* label)
 {
-   int fgr = 0, fgg = 0, fgb = 0;
-   int bgr = 255, bgg = 255, bgb = 255;
+   int fgr = 0, fgg = 0, fgb = 0, fga = 255;
+   int bgr = 255, bgg = 255, bgb = 255, bga = 0;
    curr.Read(fgr, "FGColor", 0);
    curr.Read(fgg, "FGColor", 1);
    curr.Read(fgb, "FGColor", 2);
+   curr.Read(fga, "FGColor", 3);
    curr.Read(bgr, "BGColor", 0);
    curr.Read(bgg, "BGColor", 1);
    curr.Read(bgb, "BGColor", 2);
+   curr.Read(bga, "BGColor", 3);
    
    QPalette currpal = label->palette();
-   currpal.setColor(QPalette::WindowText, QColor(fgr, fgg, fgb));
-   currpal.setColor(QPalette::Window, QColor(bgr, bgg, bgb));
+   currpal.setColor(QPalette::WindowText, QColor(fgr, fgg, fgb, fga));
+   currpal.setColor(QPalette::Window, QColor(bgr, bgg, bgb, bga));
    label->setPalette(currpal);
 }
 

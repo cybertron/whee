@@ -7,6 +7,7 @@
 #include <QtGui/QLabel>
 #include <QTimer>
 #include <QFont>
+#include <QMouseEvent>
 #include "NTreeReader.h"
 #include "WidgetContainer.h"
 
