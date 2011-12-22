@@ -75,3 +75,14 @@ void WidgetContainer::DrawGraph(float percent)
    
    label->setPixmap(newp);
 }
+
+
+/* This function is a vicious hack to deal with the fact that changing the label text in Qt 4.7 results in
+ * an irritating ghost flicker where everything overlapping the label seems to show double for an instant.
+ */
+void WidgetContainer::SetText(QString text)
+{
+   label->hide();
+   label->setText(text);
+   label->show();
+}

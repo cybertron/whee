@@ -43,7 +43,7 @@ void NetworkWidget::Update()
       qrate.setNum(rate);
       QString text = format;
       text.replace("%s", qrate);
-      label->setText(text);
+      SetText(text);
    }
    else if (type == Image)
    {

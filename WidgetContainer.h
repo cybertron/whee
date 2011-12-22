@@ -30,6 +30,7 @@ class WidgetContainer
       WidgetContainer() : type(Text), orientation(Vertical), lastpercent(0.f), interval(0), remaining(0) {}
       // By default a no-op so this can be used directly for static widgets
       virtual void Update() {}
+      virtual void SetText(QString);
       
       static unsigned long KB() {return KBv;}
       static unsigned long MB() {return MBv;}

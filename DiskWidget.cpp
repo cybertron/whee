@@ -38,7 +38,7 @@ void DiskWidget::Update()
    {
       QString text = format;
       text = text.replace("%s", QString::number(val));
-      label->setText(text);
+      SetText(text);
    }
    else if (type == Image)
    {

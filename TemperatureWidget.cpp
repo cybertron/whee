@@ -40,7 +40,7 @@ void TemperatureWidget::ProcessFinished()
       QString stemp;
       stemp.setNum(temp);
       value.replace("%s", stemp);
-      label->setText(value);
+      SetText(value);
    }
    else if (type == Image)
    {

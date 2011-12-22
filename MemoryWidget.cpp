@@ -62,7 +62,7 @@ void MemoryWidget::Update()
    {
       QString text = format;
       text.replace("%s", QString::number(val));
-      label->setText(text);
+      SetText(text);
    }
    else if (type == Image)
    {

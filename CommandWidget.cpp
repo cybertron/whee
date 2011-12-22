@@ -33,7 +33,7 @@ void CommandWidget::ReadOutput()
 
 void CommandWidget::ProcessFinished()
 {
-   label->setText(text);
+   SetText(text);
    text = "";
 }
 

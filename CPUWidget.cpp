@@ -45,7 +45,7 @@ void CPUWidget::Update()
    {
       QString text = format;
       text.replace("%s", QString::number(result));
-      label->setText(text);
+      SetText(text);
    }
    else if (type == Image)
    {
