@@ -24,9 +24,22 @@ void NetworkWidget::Update()
       if (l[i].toStdString() == interface)
       {
          if (down)
-            val = l[i + 1].toULong();
+         {
+            // On 32-bit archs it's possible to overflow size_t, so truncate to only the
+            // last nine digits.  If you need to be able to measure more than a gigabyte of
+            // bandwidth, switch to 64-bits. :-)
+            if (sizeof(val) > 4)
+               val = l[i + 1].toULong();
+            else
+               val = l[i + 1].right(9).toULong();
+         }
          else
-            val = l[i + 9].toULong();
+         {
+            if (sizeof(val) > 4)
+               val = l[i + 9].toULong();
+            else
+               val = l[i + 9].right(9).toULong();
+         }
          break;
       }
    }
