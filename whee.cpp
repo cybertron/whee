@@ -20,7 +20,9 @@ using std::endl;
 whee::whee(string filename) : background(NULL)
 {
    setWindowFlags(Qt::FramelessWindowHint);
-   //setAttribute(Qt::WA_TranslucentBackground);
+   // Causes issues in some non-compositing WM's (notably Fluxbox)
+   if (QX11Info::isCompositingManagerRunning())
+      setAttribute(Qt::WA_TranslucentBackground);
    
    NTreeReader read(filename);
    
