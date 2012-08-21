@@ -51,8 +51,8 @@ using boost::shared_ptr;
 class NTreeReader
 {
    public:
-      explicit NTreeReader(int lev = 0, const string& n = "");
-      NTreeReader(string); // Allow implicit conversion from string though
+      explicit NTreeReader(int lev = 0, const string& n = "", size_t kl = 0);
+      NTreeReader(string, size_t kl = 0); // Allow implicit conversion from string though
       const NTreeReader& GetItem(const int) const;
       const NTreeReader& operator()(const int) const;
       const NTreeReader& GetItemByName(const string) const;
@@ -79,6 +79,7 @@ class NTreeReader
       */
       mutable map<string, string, std::less<string> > values;
       size_t level;
+      size_t keylevel;
       string name;
       string path;
 };

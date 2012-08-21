@@ -23,20 +23,20 @@ void WidgetContainer::SetLabelMask(float percent)
 {
    int width = label->width();
    int height = label->height();
-   percent = 1.f - percent;
    
-   // Apparently subtracting two equal qregions leaves you with the original region
-   if (percent > .99f)
-      percent = .99f;
+   if (orientation == Vertical)
+      percent = 1.f - percent;
    
-   QRegion region(0, 0, width, height);
+   // Apparently subtracting two equal QRegions leaves you with the original region - adding one to
+   // both directions just unmasks parts of the image that don't exist, so it shouldn't be a problem
+   QRegion region(-1, 0, width, height + 1);
    if (orientation == Vertical)
    {
       region -= QRegion(0, 0, width, float(height) * percent);
    }
    else
    {
-      region -= QRegion(0, 0, float(width) * percent, height);
+      region -= QRegion(float(width) * percent, 0, width, height);
    }
    label->setMask(region);
 }

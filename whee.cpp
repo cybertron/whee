@@ -20,7 +20,7 @@ using std::endl;
 whee::whee(string filename) : background(NULL)
 {
    setWindowFlags(Qt::FramelessWindowHint);
-   setAttribute(Qt::WA_TranslucentBackground);
+   //setAttribute(Qt::WA_TranslucentBackground);
    
    NTreeReader read(filename);
    
@@ -66,9 +66,9 @@ whee::whee(string filename) : background(NULL)
    
    SetXProps(x, y, width, height, strut);
    
-   show();
-   
    setGeometry(x, y, width, height);
+   
+   show();
 }
 
 whee::~whee() {}
@@ -386,10 +386,19 @@ void whee::CreateDiskWidget(const NTreeReader& curr, int offx, int offy)
       w.stat = DiskWidget::Used;
    else if (qstat == "total")
       w.stat = DiskWidget::Total;
+   else if (qstat == "read")
+      w.stat = DiskWidget::Read;
+   else if (qstat == "write")
+      w.stat = DiskWidget::Write;
+   else if (qstat == "readwrite")
+      w.stat = DiskWidget::ReadWrite;
    
    string unit = "KB";
    curr.Read(unit, "Unit");
    w.unit = unitmap[unit];
+   
+   curr.Read(w.max, "Max");
+   curr.Read(w.sectorsize, "SectorSize");
    
    curr.Read(w.interval, "Interval");
    

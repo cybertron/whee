@@ -20,12 +20,14 @@
 
 #include "NTreeReader.h"
 #include <iostream>
+using std::cout;
+using std::endl;
 
-NTreeReader::NTreeReader(int lev, const string& n) : level(lev), name(n), path("")
+NTreeReader::NTreeReader(int lev, const string& n, const size_t kl) : level(lev), keylevel(kl), name(n), path("")
 {
 }
 
-NTreeReader::NTreeReader(string filename) : level(0), name(""), path(filename)
+NTreeReader::NTreeReader(string filename, size_t kl) : level(0), keylevel(kl), name(""), path(filename)
 {
    if (filename == "") return; // Don't think this is necessary anymore, but it doesn't hurt
 
@@ -66,14 +68,15 @@ void NTreeReader::Parse(istringstream& in)
          continue;
       }
 
-      if (linelevel > level)
+      // When using keylevel, everything is assumed to be on the same level or problems result
+      if (linelevel > level && !keylevel)
       {
-         NTreeReaderPtr newreader(new NTreeReader(linelevel, nextname));
+         NTreeReaderPtr newreader(new NTreeReader(linelevel, nextname, keylevel));
          in.seekg(strpos);
          newreader->Parse(in);
          children.push_back(newreader);
       }
-      else if (linelevel < level)
+      else if (linelevel < level && !keylevel)
       {
          in.seekg(strpos);
          return;
@@ -82,7 +85,11 @@ void NTreeReader::Parse(istringstream& in)
       {
          line.clear();
          line.str(currline);
-         line >> valname;
+         size_t count = 0;
+         do
+         {
+            line >> valname;
+         } while (count++ < keylevel);
          values[valname] = currline;
       }
       strpos = in.tellg();
@@ -128,7 +135,10 @@ string NTreeReader::ReadLine(string& ret, const string name) const
    {
       string tempret = "";
       istringstream readval(values[name]);
-      readval >> tempret;
+      for (ssize_t i = -1; i < (ssize_t) keylevel; ++i)
+      {
+         readval >> tempret;
+      }
       readval.ignore();
       getline(readval, tempret);
       if (tempret != "")
@@ -141,7 +151,7 @@ string NTreeReader::ReadLine(string& ret, const string name) const
 string NTreeReader::ReadVal(const string& line, const int num) const
 {
    istringstream readval(line);
-   int i = -1; // Always need to read at least two values even if they pass in 0
+   int i = -1 - keylevel; // Always need to read at least two values even if they pass in 0
    string retval;
    while (i <= num)
    {
@@ -159,10 +169,13 @@ bool NTreeReader::HaveValue(const string& name, const int num) const
    if (retval)
    {
       istringstream readval(values[name]);
-      int i = -1;
+      int i = -1 - keylevel;
       string dummy;
       while (readval >> dummy && i < num)
+      {
+         
          ++i;
+      }
       if (i != num) retval = false; // This may not work as intended, testing is needed
    }
    return retval;

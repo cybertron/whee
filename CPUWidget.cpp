@@ -35,8 +35,6 @@ void CPUWidget::Update()
    else if (stat == Busy)
       val = user + nice + system + io + irq + sirq;
    
-   int elapsed = timer.restart();
-   
    size_t result = float(val - lastjiffies) / float(total - lasttotal) * 100.f;
    lastjiffies = val;
    lasttotal = total;
