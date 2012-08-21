@@ -17,6 +17,7 @@ void DiskWidget::Update()
    // The following calculations easily overflow 32-bit ints
    unsigned long long total, free, used, read, write;
    int elapsed;
+   float localmax;
    
    if (stat == Total || stat == Free || stat == Used)
    {
@@ -26,7 +27,7 @@ void DiskWidget::Update()
       total = stats.f_blocks / KB() * stats.f_frsize;
       free = stats.f_bavail / KB() * stats.f_frsize;
       used = (stats.f_blocks - stats.f_bfree) / KB() * stats.f_frsize;
-      max = total;
+      localmax = total;
    }
    else
    {
@@ -39,6 +40,7 @@ void DiskWidget::Update()
       // number of sectors read/written from/to the disk, so need to account for sector size
       read /= (1024.f / sectorsize);
       write /= (1024.f / sectorsize);
+      localmax = max * unit / KB();
    }
       
    unsigned long long val;
@@ -59,7 +61,8 @@ void DiskWidget::Update()
    if (stat == Read || stat == Write || stat == ReadWrite)
       val /= (float(elapsed) / 1000.f);
    
-   percent = float(val) / float(max * unit / KB());
+   
+   percent = float(val) / localmax;
    val /= unit / KB();
    lastread = read;
    lastwrite = write;
