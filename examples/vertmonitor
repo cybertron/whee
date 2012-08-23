@@ -1,0 +1,340 @@
+Position 0 435
+Dimensions 60 425
+Strut left
+Font Bitstream Vera Sans
+FontSize 8
+Interval 1000
+Widget
+   Type Image
+   Filename BasicBG.png
+   Position 0 0
+   Dimensions 60 500
+Widget
+   Type Group
+   Position 0 0
+   Widget
+      Type Command
+      Command hostname
+      Position 2 0
+      Dimensions 60 12
+      FGColor 0 255 0
+   Widget
+      Type Command
+      Command uptime | sed -r 's/(.*up )(.*day.?)?(, )?((..:..)|..? min)(,.*,.*,.*,.*)/\2\n\4/'
+      Position 2 12
+      Dimensions 60 24
+      FGColor 0 255 0
+      
+Widget
+   Type Group
+   Position 0 40
+   Widget
+      Type CPU
+      SubType Image
+      Statistic Busy
+      Position 0 14
+      Filename VertBar.png
+      Dimensions 8 25
+   Widget
+      Type CPU
+      SubType Graph
+      Statistic Busy
+      Position 0 14
+      Dimensions 50 25
+      FGColor 0 255 0
+   Widget
+      Type CPU
+      SubType Text
+      Statistic Busy
+      Position 2 2
+      Dimensions 100 30
+      Format CPU: %s%
+      FGColor 0 255 0
+Widget
+   Type Group
+   Position 0 80
+   Widget
+      Type Text
+      Text Temp:
+      Position 2 0
+      Dimensions 50 30
+      FGColor 0 255 0
+   Widget
+      Type Temperature
+      SubType Text
+      Position 2 12
+      Dimensions 50 30
+      Chip acpitz-virtual-0
+      ID temp1:
+      Format %s
+      FGColor 255 0 0
+   Widget
+      Type Temperature
+      SubType Graph
+      Position 0 24
+      Dimensions 50 25
+      Chip acpitz-virtual-0
+      ID temp1:
+      FGColor 255 0 0
+      Max 70
+   Widget
+      Type Temperature
+      SubType Text
+      Position 15 12
+      Dimensions 50 30
+      Chip acpitz-virtual-0
+      ID temp2:
+      Format %s
+      FGColor 0 255 0
+   Widget
+      Type Temperature
+      SubType Graph
+      Position 0 24
+      Dimensions 50 25
+      Chip acpitz-virtual-0
+      ID temp2:
+      FGColor 0 255 0
+      Max 70
+Widget
+   Type Group
+   Position 0 130
+   Widget
+      Type Text
+      Text Memory:
+      Position 2 0
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Memory
+      SubType Image
+      Statistic Free
+      Position 0 12
+      Dimensions 8 50
+      Filename VertBar.png
+      Unit MB
+   Widget
+      Type Text
+      Text Used
+      Position 10 12
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Memory
+      SubType Text
+      Statistic Used
+      Position 10 24
+      Dimensions 200 30
+      Format %s MB
+      Unit MB
+      FGColor 0 255 0
+   Widget
+      Type Text
+      Text Free
+      Position 10 36
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Memory
+      SubType Text
+      Statistic Free
+      Position 10 48
+      Dimensions 200 30
+      Format %s MB
+      Unit MB
+      FGColor 0 255 0
+      
+   Widget
+      Type Memory
+      SubType Image
+      Statistic UsedSwap
+      Position 0 60
+      Dimensions 8 25
+      Unit MB
+      Filename VertBar.png
+   Widget
+      Type Text
+      Text Swap
+      Position 10 60
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Memory
+      SubType Text
+      Statistic UsedSwap
+      Position 10 72
+      Dimensions 60 30
+      Format %s MB
+      Unit MB
+      FGColor 0 255 0
+Widget
+   Type Group
+   Position 0 220
+   Widget
+      Type Network
+      SubType Image
+      Interface eth0
+      Direction down
+      Position 0 0
+      Dimensions 8 25
+      Filename VertBar.png
+      Max 12000
+   Widget
+      Type Network
+      SubType Image
+      Interface eth0
+      Direction up
+      Position 0 24
+      Dimensions 8 25
+      Filename VertBar.png
+      Max 12000
+   Widget
+      Type Text
+      Text Net In:
+      Position 10 0
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Network
+      SubType Text
+      Interface eth0
+      Direction down
+      Position 10 12
+      Dimensions 200 30
+      Format %s kbps
+      FGColor 0 255 0
+   Widget
+      Type Text
+      Text Net Out:
+      Position 10 24
+      Dimensions 60 20
+      FGColor 0 255 0
+   Widget
+      Type Network
+      SubType Text
+      Interface eth0
+      Direction up
+      Position 10 36
+      Dimensions 200 30
+      Format %s kbps
+      FGColor 0 255 0
+   Widget
+      Type Network
+      SubType Graph
+      Interface eth0
+      Direction down
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 255 0
+      Max 1000
+   Widget
+      Type Network
+      SubType Graph
+      Interface eth0
+      Direction down
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 255 0
+      Max 12000
+   Widget
+      Type Network
+      SubType Graph
+      Interface eth0
+      Direction up
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 0 255
+      Max 1000
+   Widget
+      Type Network
+      SubType Graph
+      Interface eth0
+      Direction up
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 0 255
+      Max 12000
+   Widget
+      Type Network
+      SubType Graph
+      Interface wlan0
+      Direction down
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 255 0
+      Max 2000
+   Widget
+      Type Network
+      SubType Graph
+      Interface wlan0
+      Direction up
+      Position 0 48
+      Dimensions 50 25
+      FGColor 0 0 255
+      Max 2000
+Widget
+   Type Group
+   Position 0 300
+   Widget
+      Type Group
+      Position 0 0
+      Widget
+         Type Disk
+         SubType Image
+         Path /
+         Statistic Free
+         Unit GB
+         Position 0 0
+         Dimensions 8 25
+         Filename VertBar.png
+      Widget
+         Type Text
+         Text /:
+         Position 10 0
+         Dimensions 30 30
+         FGColor 0 255 0
+      Widget
+         Type Disk
+         SubType Text
+         Path /
+         Statistic Free
+         Unit GB
+         Position 10 12
+         Dimensions 100 30
+         Format %s GB
+         FGColor 0 255 0
+      Widget
+         Type Disk
+         SubType Text
+         Path sda
+         Statistic ReadWrite
+         Unit MB
+         Position 10 24
+         Dimensions 100 12
+         Format %s MB/s
+         FGColor 0 255 0
+      Widget
+         Type Disk
+         SubType Image
+         Path sda
+         Statistic ReadWrite
+         Unit MB
+         Max 75
+         Position 2 36
+         Dimensions 8 25
+         Filename VertBar.png
+      Widget
+         Type Disk
+         SubType Graph
+         Path sda
+         Statistic ReadWrite
+         Unit MB
+         Max 75
+         Position 2 36
+         Dimensions 56 25
+         FGColor 0 255 0
+Widget
+   Type Command
+   Command top -b -n1 | head -n 11 | tail -n 4 | awk '{print $9,$12}' | awk '{print $1 "|" $2}'
+   Position 2 370
+   Dimensions 60 60
+   FGColor 0 255 0
