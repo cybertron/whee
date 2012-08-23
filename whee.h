@@ -23,6 +23,9 @@ class whee : public QMainWindow
    
    public slots:
       void RunUpdates();
+      void contextMenu(const QPoint&);
+      void reloadClicked();
+      void closeClicked();
       
    private:
       list<WidgetContainerPtr> widgets;
@@ -34,7 +37,9 @@ class whee : public QMainWindow
       int fontweight;
       bool fontitalic;
       QLabel* background;
+      string filename;
       
+      void ReadConfig();
       void ReadNode(const NTreeReader&, int, int);
       void CreateTextWidget(const NTreeReader&, int, int);
       void CreateImageWidget(const NTreeReader&, int, int);

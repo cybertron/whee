@@ -15,11 +15,10 @@ void CommandWidget::Update()
       return;
    
    QString qcommand = command.c_str();
-   qcommand = "sh -c \"" + qcommand + "\"";
    process = QProcessPtr(new QProcess());
    QObject::connect(&(*process), SIGNAL(readyReadStandardOutput()), this, SLOT(ReadOutput()));
    QObject::connect(&(*process), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished()));
-   process->start(qcommand);
+   process->start("sh", QStringList() << "-c" << qcommand);
 }
 
 

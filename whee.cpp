@@ -3,6 +3,7 @@
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QMenu>
 #include <iostream>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -17,13 +18,30 @@
 using std::cout;
 using std::endl;
 
-whee::whee(string filename) : background(NULL)
+whee::whee(string fn) : background(NULL), filename(fn)
 {
    setWindowFlags(Qt::FramelessWindowHint);
    // Causes issues in some non-compositing WM's (notably Fluxbox)
    if (QX11Info::isCompositingManagerRunning())
       setAttribute(Qt::WA_TranslucentBackground);
    
+   GenUnitMap();
+   
+   QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
+   
+   ReadConfig();
+   
+   setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(contextMenu(const QPoint&)));
+   
+   show();
+}
+
+whee::~whee() {}
+
+
+void whee::ReadConfig()
+{
    NTreeReader read(filename);
    
    ssize_t x, y, width, height;
@@ -56,24 +74,24 @@ whee::whee(string filename) : background(NULL)
    if (buffer > 0)
       fontitalic = true;
    
-   GenUnitMap();
-      
    background = new QLabel(this);
+   background->setGeometry(0, 0, width, height);
+   background->show();
    
    ReadNode(read, 0, 0);
    
+   for (list<WidgetContainerPtr>::iterator i = widgets.begin(); i != widgets.end(); ++i)
+   {
+      (*i)->label->show();
+   }
+   
    RunUpdates();
-   QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
    timer.start(interval);
    
    SetXProps(x, y, width, height, strut);
    
    setGeometry(x, y, width, height);
-   
-   show();
 }
-
-whee::~whee() {}
 
 
 void whee::ReadNode(const NTreeReader& read, int offx, int offy)
@@ -134,7 +152,7 @@ void whee::CreateTextWidget(const NTreeReader& curr, int offx, int offy)
    string text;
    curr.ReadLine(text, "Text");
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    SetLabelPalette(curr, label);
    SetLabelFont(curr, label);
@@ -148,7 +166,7 @@ void whee::CreateImageWidget(const NTreeReader& curr, int offx, int offy)
    string filename;
    curr.ReadLine(filename, "Filename");
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    label->setPixmap(QPixmap(filename.c_str()));
    widgets.push_back(WidgetContainerPtr(new WidgetContainer(label)));
@@ -162,7 +180,7 @@ void whee::CreateMemoryWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    MemoryWidget w(label);
    SetLabelPalette(curr, label);
@@ -228,7 +246,7 @@ void whee::CreateNetworkWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    
    NetworkWidget w(label);
@@ -275,7 +293,7 @@ void whee::CreateCPUWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    
    CPUWidget w(label);
@@ -329,7 +347,7 @@ void whee::CreateCommandWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    SetLabelPalette(curr, label);
    SetLabelFont(curr, label);
@@ -351,7 +369,7 @@ void whee::CreateDiskWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    
    DiskWidget w(label);
@@ -415,7 +433,7 @@ void whee::CreateTemperatureWidget(const NTreeReader& curr, int offx, int offy)
    QString qtype = type.c_str();
    qtype = qtype.toLower();
    
-   QLabel* label = new QLabel(this);
+   QLabel* label = new QLabel(background);
    SetLabelGeometry(curr, label, offx, offy);
    
    // Have to use a pointer to this one because it inherits from QObject
@@ -655,7 +673,6 @@ void whee::UpdateBackground()
       setGeometry(x() - 1, y(), 1, height());
       QPixmap pixmap = QPixmap::grabWindow(id, x() + 1, y(), savewidth, height());
       setGeometry(x() + 1, y(), savewidth, height());
-      background->setGeometry(0, 0, width(), height());
       background->setPixmap(pixmap);
    }
 }
@@ -678,6 +695,29 @@ void whee::GenUnitMap()
    unitmap["EB"] = WidgetContainer::EB();
    unitmap["ZB"] = WidgetContainer::ZB();
    unitmap["YB"] = WidgetContainer::YB();
+}
+
+
+void whee::contextMenu(const QPoint& pos)
+{
+   QMenu* menu = new QMenu(this);
+   menu->addAction("Reload", this, SLOT(reloadClicked()));
+   menu->addAction("Close", this, SLOT(closeClicked()));
+   menu->exec(mapToGlobal(pos));
+}
+
+
+void whee::reloadClicked()
+{
+   widgets.clear();
+   delete background;
+   ReadConfig();
+}
+
+
+void whee::closeClicked()
+{
+   close();
 }
 
 #include "whee.moc"
