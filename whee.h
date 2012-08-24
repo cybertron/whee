@@ -3,18 +3,19 @@
 
 #include <list>
 #include <string>
-#include <QtGui/QMainWindow>
+#include <QtGui/QDialog>
 #include <QtGui/QLabel>
 #include <QTimer>
 #include <QFont>
 #include <QMouseEvent>
+#include <QBoxLayout>
 #include "NTreeReader.h"
 #include "WidgetContainer.h"
 
 using std::list;
 using std::string;
 
-class whee : public QMainWindow
+class whee : public QDialog
 {
    Q_OBJECT
    public:
@@ -38,6 +39,7 @@ class whee : public QMainWindow
       bool fontitalic;
       QLabel* background;
       string filename;
+      QBoxLayout* currlayout;
       
       void ReadConfig();
       void ReadNode(const NTreeReader&, int, int);
@@ -49,6 +51,7 @@ class whee : public QMainWindow
       void CreateCommandWidget(const NTreeReader&, int, int);
       void CreateDiskWidget(const NTreeReader&, int, int);
       void CreateTemperatureWidget(const NTreeReader&, int, int);
+      void CreateLayout(const NTreeReader&, int, int);
       
       void SetLabelGeometry(const NTreeReader&, QLabel*, int, int);
       void SetLabelPalette(const NTreeReader&, QLabel*);

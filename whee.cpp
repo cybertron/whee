@@ -4,6 +4,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QMenu>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <iostream>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -18,7 +20,7 @@
 using std::cout;
 using std::endl;
 
-whee::whee(string fn) : background(NULL), filename(fn)
+whee::whee(string fn) : background(NULL), filename(fn), currlayout(NULL)
 {
    setWindowFlags(Qt::FramelessWindowHint);
    // Causes issues in some non-compositing WM's (notably Fluxbox)
@@ -142,6 +144,22 @@ void whee::ReadNode(const NTreeReader& read, int offx, int offy)
          curr.Read(x, "Position", 0);
          curr.Read(y, "Position", 1);
          ReadNode(curr, offx + x, offy + y);
+      }
+      else if (qtype == "layout")
+      {
+         QBoxLayout* save = currlayout;
+         CreateLayout(curr, offx, offy);
+         ReadNode(curr, 0, 0);
+         currlayout = save;
+      }
+      else if (qtype == "stretch")
+      {
+         if (currlayout)
+         {
+            int amount = 1;
+            curr.Read(amount, "Amount");
+            currlayout->addStretch(amount);
+         }
       }
    }
 }
@@ -467,15 +485,60 @@ void whee::CreateTemperatureWidget(const NTreeReader& curr, int offx, int offy)
 }
 
 
+void whee::CreateLayout(const NTreeReader& curr, int offx, int offy)
+{
+   string orientation;
+   // Dummy widget to read orientation
+   WidgetContainer w;
+   SetWidgetOrientation(curr, w);
+   QBoxLayout* newlayout;
+   if (w.orientation == w.Vertical)
+      newlayout = new QVBoxLayout();
+   else
+      newlayout = new QHBoxLayout();
+   
+   int spacing = 5;
+   curr.Read(spacing, "Spacing");
+   newlayout->setSpacing(spacing);
+   int left, top, right, bottom;
+   left = top = right = bottom = 10;
+   curr.Read(left, "Margins", 0);
+   curr.Read(top, "Margins", 1);
+   curr.Read(right, "Margins", 2);
+   curr.Read(bottom, "Margins", 3);
+   newlayout->setContentsMargins(left, top, right, bottom);
+   
+   if (currlayout)
+   {
+      currlayout->addLayout(newlayout);
+   }
+   else
+   {
+      if (layout())
+         delete layout();
+      background->setLayout(newlayout);
+   }
+   
+   currlayout = newlayout;
+}
+
+
 void whee::SetLabelGeometry(const NTreeReader& curr, QLabel* label, int offx, int offy)
 {
-   ssize_t x = 0, y = 0, width = 100, height = 100;
-   curr.Read(x, "Position", 0);
-   curr.Read(y, "Position", 1);
-   curr.Read(width, "Dimensions", 0);
-   curr.Read(height, "Dimensions", 1);
-   
-   label->setGeometry(x + offx, y + offy, width, height);
+   if (!currlayout)
+   {
+      ssize_t x = 0, y = 0, width = 100, height = 100;
+      curr.Read(x, "Position", 0);
+      curr.Read(y, "Position", 1);
+      curr.Read(width, "Dimensions", 0);
+      curr.Read(height, "Dimensions", 1);
+      
+      label->setGeometry(x + offx, y + offy, width, height);
+   }
+   else
+   {
+      currlayout->addWidget(label);
+   }
    
    label->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
