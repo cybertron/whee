@@ -16,6 +16,7 @@ void NetworkWidget::Update()
    QTextStream stream(&f);
    QString contents = stream.readAll();
    contents.replace(":", " ");
+   contents.replace("\n", " ");
    
    size_t val;
    QStringList l = contents.split(" ", QString::SkipEmptyParts);
