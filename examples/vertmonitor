@@ -334,7 +334,7 @@ Widget
          FGColor 0 255 0
 Widget
    Type Command
-   Command top -b -n1 | head -n 11 | tail -n 4 | awk '{print $9,$12}' | awk '{print $1 "|" $2}'
+   Command top -b -n1 | head -n 11 | tail -n 4 | awk '{print $9,$12}' | awk '{printf "%d|%s\n", $1, $2}'
    Position 2 370
    Dimensions 60 60
    FGColor 0 255 0
