@@ -8,7 +8,7 @@ CPUWidget::CPUWidget(QLabel* l) : lastjiffies(0), lasttotal(0)
 
 void CPUWidget::Update()
 {
-   NTreeReader read("/proc/stat");
+   NTreeReader read = GetNTreeReader("/proc/stat");
    
    size_t val;
    size_t user, nice, system, idle, io, irq, sirq, total;

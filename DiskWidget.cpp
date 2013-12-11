@@ -19,6 +19,7 @@ void DiskWidget::Update()
    int elapsed;
    float localmax;
    
+   // These stats only work locally, but you can always mount a remote filesystem to monitor it
    if (stat == Total || stat == Free || stat == Used)
    {
       statvfs(path.c_str(), &stats);
@@ -31,7 +32,7 @@ void DiskWidget::Update()
    }
    else
    {
-      NTreeReader reader("/proc/diskstats", 2);
+      NTreeReader reader = GetNTreeReader("/proc/diskstats", 2);
       reader.Read(read, path, 2);
       reader.Read(write, path, 6);
       

@@ -14,7 +14,7 @@ MemoryWidget::MemoryWidget(QLabel* l) : stat(Free)
 void MemoryWidget::Update()
 {
    // Cool, /proc/meminfo is parsable by NTreeReader
-   NTreeReader read("/proc/meminfo");
+   NTreeReader read = GetNTreeReader("/proc/meminfo");
    size_t val;
    size_t total, free, buffer, cache, totalswap, freeswap;
    float percent;

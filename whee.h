@@ -58,6 +58,7 @@ class whee : public QDialog
       void SetLabelFont(const NTreeReader&, QLabel*);
       void SetLabelPixmap(const NTreeReader&, QLabel*);
       void SetWidgetOrientation(const NTreeReader&, WidgetContainer&);
+      void SetHost(const NTreeReader&, WidgetContainer&);
       void GenUnitMap();
       void SetXProps(int, int, int, int, string);
       void UpdateBackground();

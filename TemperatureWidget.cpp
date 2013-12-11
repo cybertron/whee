@@ -14,7 +14,10 @@ void TemperatureWidget::Update()
    if (process && process->state() != QProcess::NotRunning)
       return;
    
-   QString qcommand = "sensors " + QString(chip.c_str()) + " | grep '" + QString(tempid.c_str()) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
+   QString remote = "";
+   if (host != "localhost")
+      remote = "ssh " + host + " ";
+   QString qcommand = remote + "sensors " + QString(chip.c_str()) + " | grep '" + QString(tempid.c_str()) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
    qcommand = "sh -c \"" + qcommand + "\"";
    process = QProcessPtr(new QProcess());
    QObject::connect(&(*process), SIGNAL(readyReadStandardOutput()), this, SLOT(ReadOutput()));

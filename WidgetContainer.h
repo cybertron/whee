@@ -5,6 +5,7 @@
 #include <QtGui/QLabel>
 #include <QFont>
 #include <iostream>
+#include "NTreeReader.h"
 
 using std::cout;
 using std::endl;
@@ -25,6 +26,7 @@ class WidgetContainer
       Orientation orientation;
       long interval;
       long remaining;
+      QString host;
 
       WidgetContainer(QLabel*);
       WidgetContainer() : type(Text), orientation(Vertical), lastpercent(0.f), interval(0), remaining(0) {}
@@ -48,6 +50,11 @@ class WidgetContainer
       
       void SetLabelMask(float);
       void DrawGraph(float);
+      QString GetFile(QString, QString);
+      NTreeReader GetNTreeReader(QString, size_t kl = 0);
+      QString GetFileContents(QString);
+      QString CreateTemp();
+      void RemoveTemp(QString);
 };
 
 typedef boost::shared_ptr<WidgetContainer> WidgetContainerPtr;

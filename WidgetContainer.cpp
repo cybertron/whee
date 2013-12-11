@@ -1,5 +1,8 @@
 #include "WidgetContainer.h"
 #include <QPaintEngine>
+#include <QFile>
+#include <QTextStream>
+#include <stdlib.h>
 
 unsigned long WidgetContainer::KBv = 1024;
 unsigned long WidgetContainer::MBv = WidgetContainer::KB() * 1024;
@@ -85,4 +88,65 @@ void WidgetContainer::SetText(QString text)
    label->hide();
    label->setText(text);
    label->show();
+}
+
+
+// NOTE: It is the caller's responsibility to clean up the resulting temp file
+QString WidgetContainer::GetFile(QString path, QString tempdir)
+{
+   QStringList list = path.split('/');
+   QString filename = list[list.size() - 1];
+   QString localpath = tempdir + "/" + filename;
+   QString command = "ssh " + host + " cat " + path + " > " + localpath;
+   system(command.toAscii().data());
+   return localpath;
+}
+
+
+NTreeReader WidgetContainer::GetNTreeReader(QString path, size_t kl)
+{
+   if (host == "localhost")
+      return NTreeReader(path.toStdString(), kl);
+   QString tempdir = CreateTemp();
+   QString localpath = GetFile(path, tempdir);
+   NTreeReader retval(localpath.toStdString(), kl);
+   RemoveTemp(tempdir);
+   return retval;
+}
+
+
+QString WidgetContainer::GetFileContents(QString path)
+{
+   QString localpath;
+   QString tempdir;
+   if (host == "localhost")
+      localpath = path;
+   else
+   {
+      tempdir = CreateTemp();
+      localpath = GetFile(path, tempdir);
+   }
+   QFile f(localpath);
+   f.open(QIODevice::ReadOnly);
+   QTextStream stream(&f);
+   QString contents = stream.readAll();
+   f.close();
+   if (host != "localhost")
+      RemoveTemp(tempdir);
+   return contents;
+}
+
+
+QString WidgetContainer::CreateTemp()
+{
+   QString tmp = "/tmp/wheeXXXXXX";
+   QString tempdir = mkdtemp(tmp.toAscii().data());
+   return tempdir;
+}
+
+
+void WidgetContainer::RemoveTemp(QString path)
+{
+   QString command = "rm -rf " + path;
+   system(command.toAscii().data());
 }
