@@ -11,6 +11,7 @@ void NetworkWidget::Update()
 {
    QString contents = GetFileContents("/proc/net/dev");
    contents.replace(":", " ");
+   contents.replace("\n", " ");
    
    size_t val;
    QStringList l = contents.split(" ", QString::SkipEmptyParts);
