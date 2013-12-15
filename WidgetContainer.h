@@ -6,6 +6,7 @@
 #include <QFont>
 #include <iostream>
 #include "NTreeReader.h"
+#include "ProcessHelper.h"
 
 using std::cout;
 using std::endl;
@@ -27,12 +28,14 @@ class WidgetContainer
       long interval;
       long remaining;
       QString host;
+      QString temppath;
 
       WidgetContainer(QLabel*);
-      WidgetContainer() : type(Text), orientation(Vertical), lastpercent(0.f), interval(0), remaining(0) {}
+      WidgetContainer();
       // By default a no-op so this can be used directly for static widgets
       virtual void Update() {}
       virtual void SetText(QString);
+      virtual void ProcessFinished(QString) {}
       
       static unsigned long KB() {return KBv;}
       static unsigned long MB() {return MBv;}
@@ -47,14 +50,14 @@ class WidgetContainer
       static unsigned long KBv, MBv, GBv, TBv, PBv, EBv, ZBv, YBv;
       QFont font;
       float lastpercent;
+      // This object is no longer safe to copy once this has been initialized!
+      ProcessHelperPtr helper;
       
       void SetLabelMask(float);
       void DrawGraph(float);
-      QString GetFile(QString, QString);
-      NTreeReader GetNTreeReader(QString, size_t kl = 0);
-      QString GetFileContents(QString);
-      QString CreateTemp();
-      void RemoveTemp(QString);
+      
+      string GetFile(QString);
+      void InitProcessHelper();
 };
 
 typedef boost::shared_ptr<WidgetContainer> WidgetContainerPtr;

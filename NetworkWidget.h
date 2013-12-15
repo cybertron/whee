@@ -18,6 +18,8 @@ class NetworkWidget : public WidgetContainer
       
       NetworkWidget(QLabel*);
       virtual void Update();
+      void DoUpdate();
+      virtual void ProcessFinished(QString);
 };
 
 #endif // NETWORKWIDGET_H

@@ -12,6 +12,8 @@ class DiskWidget : public WidgetContainer
    public:
       DiskWidget(QLabel*);
       virtual void Update();
+      void DoUpdate(bool);
+      void ProcessFinished(QString);
       
       enum Statistic{Total, Free, Used, Read, Write, ReadWrite};
       Statistic stat;

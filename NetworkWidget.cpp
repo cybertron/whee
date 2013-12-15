@@ -1,6 +1,8 @@
 #include "NetworkWidget.h"
 #include <iostream>
 #include <math.h>
+#include <QFile>
+#include <QTextStream>
 
 NetworkWidget::NetworkWidget(QLabel* l) : interface("eth0"), down(true), lastbytes(0)
 {
@@ -9,7 +11,19 @@ NetworkWidget::NetworkWidget(QLabel* l) : interface("eth0"), down(true), lastbyt
 
 void NetworkWidget::Update()
 {
-   QString contents = GetFileContents("/proc/net/dev");
+   GetFile("/proc/net/dev");
+   if (helper->Active())
+      return;
+   DoUpdate();
+}
+   
+void NetworkWidget::DoUpdate()
+{
+   QFile f(QString(GetFile("/proc/net/dev").c_str()));
+   f.open(QIODevice::ReadOnly);
+   QTextStream stream(&f);
+   QString contents = stream.readAll();
+   f.close();
    contents.replace(":", " ");
    contents.replace("\n", " ");
    
@@ -64,3 +78,7 @@ void NetworkWidget::Update()
    }
 }
 
+void NetworkWidget::ProcessFinished(QString)
+{
+   DoUpdate();
+}

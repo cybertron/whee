@@ -11,30 +11,16 @@ CommandWidget::CommandWidget(QLabel* l)
 
 void CommandWidget::Update()
 {
-   if (process && process->state() != QProcess::NotRunning)
+   InitProcessHelper();
+   if (helper->Active())
       return;
    
    QString qcommand = command.c_str();
-   process = QProcessPtr(new QProcess());
-   QObject::connect(&(*process), SIGNAL(readyReadStandardOutput()), this, SLOT(ReadOutput()));
-   QObject::connect(&(*process), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished()));
-   process->start("sh", QStringList() << "-c" << qcommand);
+   helper->Start(qcommand, this);
 }
 
 
-void CommandWidget::ReadOutput()
-{
-   QByteArray stdout = process->readAllStandardOutput();
-   QString newtext(stdout);
-   text += newtext;
-}
-
-
-void CommandWidget::ProcessFinished()
+void CommandWidget::ProcessFinished(QString text)
 {
    SetText(text);
-   text = "";
 }
-
-#include "CommandWidget.moc"
-

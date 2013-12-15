@@ -12,21 +12,13 @@ typedef boost::shared_ptr<QProcess> QProcessPtr;
 
 class TemperatureWidget : public QObject, public WidgetContainer
 {
-   Q_OBJECT;
    public:
       TemperatureWidget(QLabel*);
       virtual void Update();
+      void ProcessFinished(QString);
       
       string chip, tempid;
       float max;
-      
-   public slots:
-      void ReadOutput();
-      void ProcessFinished();
-   
-   private:
-      QProcessPtr process;
-      QString text;
 };
 
 typedef boost::shared_ptr<TemperatureWidget> TemperatureWidgetPtr;

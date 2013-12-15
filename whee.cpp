@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <iostream>
+#include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include "MemoryWidget.h"
@@ -31,6 +32,8 @@ whee::whee(string fn) : background(NULL), filename(fn), currlayout(NULL)
    
    QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(RunUpdates()));
    
+   CreateTemp();
+   
    ReadConfig();
    
    setContextMenuPolicy(Qt::CustomContextMenu);
@@ -39,7 +42,29 @@ whee::whee(string fn) : background(NULL), filename(fn), currlayout(NULL)
    show();
 }
 
-whee::~whee() {}
+
+void whee::CreateTemp()
+{
+   QString tmp = "/tmp/wheeXXXXXX";
+   temppath = mkdtemp(tmp.toAscii().data());
+}
+
+
+whee::~whee()
+{
+}
+
+void whee::closeEvent(QCloseEvent* event)
+{
+   RemoveTemp();
+   event->accept();
+}
+
+void whee::RemoveTemp()
+{
+   QString command = "rm -rf " + temppath;
+   system(command.toAscii().data());
+}
 
 
 void whee::ReadConfig()
@@ -84,6 +109,7 @@ void whee::ReadConfig()
    
    for (list<WidgetContainerPtr>::iterator i = widgets.begin(); i != widgets.end(); ++i)
    {
+      (*i)->temppath = temppath;
       (*i)->label->show();
    }
    

@@ -1,8 +1,9 @@
 #include "WidgetContainer.h"
 #include <QPaintEngine>
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QTextStream>
-#include <stdlib.h>
 
 unsigned long WidgetContainer::KBv = 1024;
 unsigned long WidgetContainer::MBv = WidgetContainer::KB() * 1024;
@@ -18,6 +19,15 @@ WidgetContainer::WidgetContainer(QLabel* l) : label(l),
                                               orientation(Vertical),
                                               interval(0),
                                               remaining(0)
+{
+}
+
+
+WidgetContainer::WidgetContainer() : type(Text),
+                                     orientation(Vertical),
+                                     lastpercent(0.f),
+                                     interval(0),
+                                     remaining(0)
 {
 }
 
@@ -91,62 +101,29 @@ void WidgetContainer::SetText(QString text)
 }
 
 
-// NOTE: It is the caller's responsibility to clean up the resulting temp file
-QString WidgetContainer::GetFile(QString path, QString tempdir)
-{
-   QStringList list = path.split('/');
-   QString filename = list[list.size() - 1];
-   QString localpath = tempdir + "/" + filename;
-   QString command = "ssh " + host + " cat " + path + " > " + localpath;
-   system(command.toAscii().data());
-   return localpath;
-}
-
-
-NTreeReader WidgetContainer::GetNTreeReader(QString path, size_t kl)
+string WidgetContainer::GetFile(QString path)
 {
    if (host == "localhost")
-      return NTreeReader(path.toStdString(), kl);
-   QString tempdir = CreateTemp();
-   QString localpath = GetFile(path, tempdir);
-   NTreeReader retval(localpath.toStdString(), kl);
-   RemoveTemp(tempdir);
-   return retval;
-}
-
-
-QString WidgetContainer::GetFileContents(QString path)
-{
-   QString localpath;
-   QString tempdir;
-   if (host == "localhost")
-      localpath = path;
-   else
+      return path.toStdString();
+   
+   QString localpath = temppath + "/" + host + path;
+   QFileInfo local(localpath);
+   QDir("/").mkpath(local.dir().path());
+   InitProcessHelper();
+   if (!helper->Active())
    {
-      tempdir = CreateTemp();
-      localpath = GetFile(path, tempdir);
+      QString command = "ssh " + host + " cat " + path + " > " + localpath;
+      helper->Start(command, this);
    }
    QFile f(localpath);
-   f.open(QIODevice::ReadOnly);
-   QTextStream stream(&f);
-   QString contents = stream.readAll();
-   f.close();
-   if (host != "localhost")
-      RemoveTemp(tempdir);
-   return contents;
+   if (f.exists())
+      return localpath.toStdString();
+   return "/dev/null";
 }
 
 
-QString WidgetContainer::CreateTemp()
+void WidgetContainer::InitProcessHelper()
 {
-   QString tmp = "/tmp/wheeXXXXXX";
-   QString tempdir = mkdtemp(tmp.toAscii().data());
-   return tempdir;
-}
-
-
-void WidgetContainer::RemoveTemp(QString path)
-{
-   QString command = "rm -rf " + path;
-   system(command.toAscii().data());
+   if (!helper)
+      helper = ProcessHelperPtr(new ProcessHelper());
 }

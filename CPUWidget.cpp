@@ -8,8 +8,18 @@ CPUWidget::CPUWidget(QLabel* l) : lastjiffies(0), lasttotal(0)
 
 void CPUWidget::Update()
 {
-   NTreeReader read = GetNTreeReader("/proc/stat");
+   GetFile("/proc/stat");
+   // Don't try to read the file if we're still in the process of retrieving it
+   // from a remote system
+   if (helper->Active())
+      return;
+   DoUpdate();
+}
    
+   
+void CPUWidget::DoUpdate()
+{
+   NTreeReader read(GetFile("/proc/stat"));
    size_t val;
    size_t user, nice, system, idle, io, irq, sirq, total;
    read.Read(user, "cpu", 0);
@@ -53,5 +63,11 @@ void CPUWidget::Update()
    {
       DrawGraph(float(result) / 100.f);
    }
+}
+
+
+void CPUWidget::ProcessFinished(QString)
+{
+   DoUpdate();
 }
 

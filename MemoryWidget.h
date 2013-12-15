@@ -12,6 +12,8 @@ class MemoryWidget : public WidgetContainer
       
       MemoryWidget(QLabel*);
       virtual void Update();
+      void DoUpdate();
+      virtual void ProcessFinished(QString);
 };
 
 #endif // MEMORYWIDGET_H

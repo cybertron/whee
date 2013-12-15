@@ -13,6 +13,11 @@ DiskWidget::DiskWidget(QLabel* l) : max(100), sectorsize(512), lastread(0), last
 
 void DiskWidget::Update()
 {
+   DoUpdate(false);
+}
+   
+void DiskWidget::DoUpdate(bool force)
+{
    struct statvfs stats;
    // The following calculations easily overflow 32-bit ints
    unsigned long long total, free, used, read, write;
@@ -32,7 +37,9 @@ void DiskWidget::Update()
    }
    else
    {
-      NTreeReader reader = GetNTreeReader("/proc/diskstats", 2);
+      NTreeReader reader(GetFile("/proc/diskstats"), 2);
+      if (helper->Active() && !force)
+         return;
       reader.Read(read, path, 2);
       reader.Read(write, path, 6);
       
@@ -82,5 +89,11 @@ void DiskWidget::Update()
    {
       DrawGraph(percent);
    }
+}
+
+
+void DiskWidget::ProcessFinished(QString)
+{
+   DoUpdate(true);
 }
 

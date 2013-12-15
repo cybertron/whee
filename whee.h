@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QFont>
 #include <QMouseEvent>
+#include <QCloseEvent>
 #include <QBoxLayout>
 #include "NTreeReader.h"
 #include "WidgetContainer.h"
@@ -40,7 +41,10 @@ class whee : public QDialog
       QLabel* background;
       string filename;
       QBoxLayout* currlayout;
+      QString temppath;
       
+      void CreateTemp();
+      void RemoveTemp();
       void ReadConfig();
       void ReadNode(const NTreeReader&, int, int);
       void CreateTextWidget(const NTreeReader&, int, int);
@@ -63,6 +67,7 @@ class whee : public QDialog
       void SetXProps(int, int, int, int, string);
       void UpdateBackground();
       void mouseReleaseEvent(QMouseEvent*);
+      void closeEvent(QCloseEvent*);
 };
 
 #endif // whee_H

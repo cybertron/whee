@@ -9,6 +9,8 @@ class CPUWidget : public WidgetContainer
    public:
       CPUWidget(QLabel*);
       virtual void Update();
+      void DoUpdate();
+      virtual void ProcessFinished(QString);
       
       enum Statistic{User, Nice, System, Idle, IO, Busy};
       Statistic stat;

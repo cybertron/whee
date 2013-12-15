@@ -13,8 +13,17 @@ MemoryWidget::MemoryWidget(QLabel* l) : stat(Free)
 
 void MemoryWidget::Update()
 {
+   GetFile("/proc/meminfo");
+   if (helper->Active())
+      return;
+   DoUpdate();
+}
+   
+   
+void MemoryWidget::DoUpdate()
+{
    // Cool, /proc/meminfo is parsable by NTreeReader
-   NTreeReader read = GetNTreeReader("/proc/meminfo");
+   NTreeReader read(GetFile("/proc/meminfo"));
    size_t val;
    size_t total, free, buffer, cache, totalswap, freeswap;
    float percent;
@@ -72,5 +81,11 @@ void MemoryWidget::Update()
    {
       DrawGraph(percent);
    }
+}
+
+
+void MemoryWidget::ProcessFinished(QString)
+{
+   DoUpdate();
 }
 

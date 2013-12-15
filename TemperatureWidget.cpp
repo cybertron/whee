@@ -11,30 +11,19 @@ TemperatureWidget::TemperatureWidget(QLabel* l)
 
 void TemperatureWidget::Update()
 {
-   if (process && process->state() != QProcess::NotRunning)
+   InitProcessHelper();
+   if (helper->Active())
       return;
    
    QString remote = "";
    if (host != "localhost")
       remote = "ssh " + host + " ";
    QString qcommand = remote + "sensors " + QString(chip.c_str()) + " | grep '" + QString(tempid.c_str()) + "' | perl -pe 's/(.*?\\+)([0-9]*)(.*)/\\2/'";
-   qcommand = "sh -c \"" + qcommand + "\"";
-   process = QProcessPtr(new QProcess());
-   QObject::connect(&(*process), SIGNAL(readyReadStandardOutput()), this, SLOT(ReadOutput()));
-   QObject::connect(&(*process), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished()));
-   process->start(qcommand);
+   helper->Start(qcommand, this);
 }
 
 
-void TemperatureWidget::ReadOutput()
-{
-   QByteArray stdout = process->readAllStandardOutput();
-   QString newtext(stdout);
-   text += newtext;
-}
-
-
-void TemperatureWidget::ProcessFinished()
+void TemperatureWidget::ProcessFinished(QString text)
 {
    float temp = text.toFloat();
    if (type == Text)
