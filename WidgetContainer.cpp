@@ -103,13 +103,13 @@ void WidgetContainer::SetText(QString text)
 
 string WidgetContainer::GetFile(QString path)
 {
+   InitProcessHelper();
    if (host == "localhost")
       return path.toStdString();
    
    QString localpath = temppath + "/" + host + path;
    QFileInfo local(localpath);
    QDir("/").mkpath(local.dir().path());
-   InitProcessHelper();
    if (!helper->Active())
    {
       QString command = "ssh " + host + " cat " + path + " > " + localpath;
