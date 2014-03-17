@@ -27,7 +27,7 @@ void NetworkWidget::DoUpdate()
    contents.replace(":", " ");
    contents.replace("\n", " ");
    
-   size_t val;
+   size_t val = 0;
    QStringList l = contents.split(" ", QString::SkipEmptyParts);
    for (size_t i = 0; i < l.length(); ++i)
    {

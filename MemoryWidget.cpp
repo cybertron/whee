@@ -26,6 +26,8 @@ void MemoryWidget::DoUpdate()
    NTreeReader read(GetFile("/proc/meminfo"));
    size_t val;
    size_t total, free, buffer, cache, totalswap, freeswap;
+   total = totalswap = 1;
+   free = buffer = cache = freeswap = 0;
    float percent;
    read.Read(total, "MemTotal:");
    read.Read(free, "MemFree:");

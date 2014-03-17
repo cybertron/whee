@@ -21,6 +21,7 @@ void DiskWidget::DoUpdate(bool force)
    struct statvfs stats;
    // The following calculations easily overflow 32-bit ints
    unsigned long long total, free, used, read, write;
+   total = free = used = read = write = 0;
    int elapsed;
    float localmax;
    

@@ -22,6 +22,7 @@ void CPUWidget::DoUpdate()
    NTreeReader read(GetFile("/proc/stat"));
    size_t val;
    size_t user, nice, system, idle, io, irq, sirq, total;
+   user = nice = system = idle = io = irq = sirq = total = 0;
    read.Read(user, "cpu", 0);
    read.Read(nice, "cpu", 1);
    read.Read(system, "cpu", 2);
@@ -44,6 +45,9 @@ void CPUWidget::DoUpdate()
       val = idle;
    else if (stat == Busy)
       val = user + nice + system + io + irq + sirq;
+   
+   if (total == lasttotal)  // Most likely means we failed to read the file
+      total = lasttotal + 1;  // Avoid div by zero
    
    size_t result = float(val - lastjiffies) / float(total - lasttotal) * 100.f;
    lastjiffies = val;
