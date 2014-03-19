@@ -112,7 +112,17 @@ string WidgetContainer::GetFile(QString path)
    QDir("/").mkpath(local.dir().path());
    if (!helper->Active())
    {
-      QString ssh = "ssh -o ControlMaster=auto -o ControlPersist=60 -o ControlPath=" + temppath + "/%r@%h:%p ";
+      QStringList opts;
+      opts << "ControlMaster=auto";
+      opts << "ControlPersist=60";
+      opts << "ControlPath=" + temppath + "/%r@%h:%p";
+      opts << "PasswordAuthentication=no";
+      QString optstring = "";
+      for (size_t i = 0; i < opts.size(); ++i)
+      {
+         optstring += " -o " + opts[i];
+      }
+      QString ssh = "ssh" + optstring + " ";
       QString command = ssh + host + " cat " + path + " > " + localpath;
       helper->Start(command, this);
    }
