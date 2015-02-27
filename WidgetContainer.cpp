@@ -18,7 +18,8 @@ WidgetContainer::WidgetContainer(QLabel* l) : label(l),
                                               type(Text),
                                               orientation(Vertical),
                                               interval(0),
-                                              remaining(0)
+                                              remaining(0),
+                                              controlmaster(true)
 {
 }
 
@@ -27,7 +28,8 @@ WidgetContainer::WidgetContainer() : type(Text),
                                      orientation(Vertical),
                                      lastpercent(0.f),
                                      interval(0),
-                                     remaining(0)
+                                     remaining(0),
+                                     controlmaster(true)
 {
 }
 
@@ -113,9 +115,13 @@ string WidgetContainer::GetFile(QString path)
    if (!helper->Active())
    {
       QStringList opts;
-      opts << "ControlMaster=auto";
-      opts << "ControlPersist=60";
-      opts << "ControlPath=" + temppath + "/%r@%h:%p";
+      // Bleh.  This isn't playing nicely with rhel 7.1 right now.  Allow shutting it off.
+      if (controlmaster)
+      {
+         opts << "ControlMaster=auto";
+         opts << "ControlPersist=60";
+         opts << "ControlPath=" + temppath + "/%r@%h:%p";
+      }
       opts << "PasswordAuthentication=no";
       QString optstring = "";
       for (size_t i = 0; i < opts.size(); ++i)

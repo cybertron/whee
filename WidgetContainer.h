@@ -27,6 +27,7 @@ class WidgetContainer
       Orientation orientation;
       long interval;
       long remaining;
+      bool controlmaster;
       QString host;
       QString temppath;
 

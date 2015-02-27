@@ -278,6 +278,7 @@ void whee::CreateMemoryWidget(const NTreeReader& curr, int offx, int offy)
    w.unit = unitmap[unit];
    
    curr.Read(w.interval, "Interval");
+   curr.Read(w.controlmaster, "ControlMaster");
    
    SetHost(curr, w);
    
@@ -327,6 +328,7 @@ void whee::CreateNetworkWidget(const NTreeReader& curr, int offx, int offy)
    curr.Read(w.interface, "Interface");
    curr.Read(w.max, "Max");
    curr.Read(w.interval, "Interval");
+   curr.Read(w.controlmaster, "ControlMaster");
    
    SetHost(curr, w);
    
@@ -383,6 +385,7 @@ void whee::CreateCPUWidget(const NTreeReader& curr, int offx, int offy)
    w.format = QString(format.c_str());
    
    curr.Read(w.interval, "Interval");
+   curr.Read(w.controlmaster, "ControlMaster");
    
    SetHost(curr, w);
    
@@ -471,6 +474,7 @@ void whee::CreateDiskWidget(const NTreeReader& curr, int offx, int offy)
    curr.Read(w.sectorsize, "SectorSize");
    
    curr.Read(w.interval, "Interval");
+   curr.Read(w.controlmaster, "ControlMaster");
    
    SetHost(curr, w);
    
