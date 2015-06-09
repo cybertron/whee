@@ -13,10 +13,10 @@ DiskWidget::DiskWidget(QLabel* l) : max(100), sectorsize(512), lastread(0), last
 
 void DiskWidget::Update()
 {
-   DoUpdate(false);
+   DoUpdate(true);
 }
    
-void DiskWidget::DoUpdate(bool force)
+void DiskWidget::DoUpdate(bool periodic)
 {
    struct statvfs stats;
    // The following calculations easily overflow 32-bit ints
@@ -38,9 +38,11 @@ void DiskWidget::DoUpdate(bool force)
    }
    else
    {
-      NTreeReader reader(GetFile("/proc/diskstats"), 2);
-      if (helper->Active() && !force)
+      string f = GetFile("/proc/diskstats", periodic);
+      if ((f != "/proc/diskstats" && periodic) || f == "/dev/null")
          return;
+      
+      NTreeReader reader(f, 2);
       reader.Read(read, path, 2);
       reader.Read(write, path, 6);
       
@@ -95,6 +97,6 @@ void DiskWidget::DoUpdate(bool force)
 
 void DiskWidget::ProcessFinished(QString)
 {
-   DoUpdate(true);
+   DoUpdate(false);
 }
 

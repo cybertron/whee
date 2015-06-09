@@ -8,18 +8,14 @@ CPUWidget::CPUWidget(QLabel* l) : lastjiffies(0), lasttotal(0)
 
 void CPUWidget::Update()
 {
-   GetFile("/proc/stat");
-   // Don't try to read the file if we're still in the process of retrieving it
-   // from a remote system
-   if (helper->Active())
-      return;
-   DoUpdate();
+   if (GetFile("/proc/stat") == "/proc/stat")
+      DoUpdate();
 }
    
    
 void CPUWidget::DoUpdate()
 {
-   NTreeReader read(GetFile("/proc/stat"));
+   NTreeReader read(GetFile("/proc/stat"), false);
    size_t val;
    size_t user, nice, system, idle, io, irq, sirq, total;
    user = nice = system = idle = io = irq = sirq = total = 0;

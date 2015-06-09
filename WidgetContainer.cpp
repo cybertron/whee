@@ -17,6 +17,7 @@ unsigned long WidgetContainer::YBv = WidgetContainer::ZB() * 1024;
 WidgetContainer::WidgetContainer(QLabel* l) : label(l),
                                               type(Text),
                                               orientation(Vertical),
+                                              lastpercent(0.f),
                                               interval(0),
                                               remaining(0),
                                               controlmaster(true)
@@ -103,7 +104,7 @@ void WidgetContainer::SetText(QString text)
 }
 
 
-string WidgetContainer::GetFile(QString path)
+string WidgetContainer::GetFile(QString path, bool startproc)
 {
    InitProcessHelper();
    if (host == "localhost")
@@ -112,7 +113,7 @@ string WidgetContainer::GetFile(QString path)
    QString localpath = temppath + "/" + host + path;
    QFileInfo local(localpath);
    QDir("/").mkpath(local.dir().path());
-   if (!helper->Active())
+   if (!helper->Active() && startproc)
    {
       QStringList opts;
       // Bleh.  This isn't playing nicely with rhel 7.1 right now.  Allow shutting it off.
@@ -129,8 +130,8 @@ string WidgetContainer::GetFile(QString path)
          optstring += " -o " + opts[i];
       }
       QString ssh = "ssh" + optstring + " ";
-      QString command = ssh + host + " cat " + path + " > " + localpath;
-      helper->Start(command, this);
+      QString command = ssh + host + " cat " + path;
+      helper->Start(command, this, localpath);
    }
    QFile f(localpath);
    if (f.exists())

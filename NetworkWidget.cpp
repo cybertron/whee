@@ -11,15 +11,13 @@ NetworkWidget::NetworkWidget(QLabel* l) : interface("eth0"), down(true), lastbyt
 
 void NetworkWidget::Update()
 {
-   GetFile("/proc/net/dev");
-   if (helper->Active())
-      return;
-   DoUpdate();
+   if (GetFile("/proc/net/dev") == "/proc/net/dev")
+      DoUpdate();
 }
    
 void NetworkWidget::DoUpdate()
 {
-   QFile f(QString(GetFile("/proc/net/dev").c_str()));
+   QFile f(QString(GetFile("/proc/net/dev", false).c_str()));
    f.open(QIODevice::ReadOnly);
    QTextStream stream(&f);
    QString contents = stream.readAll();

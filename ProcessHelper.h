@@ -13,18 +13,21 @@ class ProcessHelper : public QObject
    Q_OBJECT
    public:
       ProcessHelper();
-      void Start(QString, WidgetContainer*);
+      void Start(QString, WidgetContainer*, QString outfile = "");
       bool Active();
       
    public slots:
       void ReadOutput();
       void ReadError();
-      void ProcessFinished();
+      void ProcessFinished(int, QProcess::ExitStatus);
    
    private:
       WidgetContainer* widget;
       QProcessPtr process;
+      QString command;
       QString text;
+      QString error;
+      QString ofile;
       bool active;
 };
 

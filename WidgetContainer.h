@@ -57,7 +57,7 @@ class WidgetContainer
       void SetLabelMask(float);
       void DrawGraph(float);
       
-      string GetFile(QString);
+      string GetFile(QString, bool startprocess = true);
       void InitProcessHelper();
 };
 

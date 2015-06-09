@@ -13,17 +13,15 @@ MemoryWidget::MemoryWidget(QLabel* l) : stat(Free)
 
 void MemoryWidget::Update()
 {
-   GetFile("/proc/meminfo");
-   if (helper->Active())
-      return;
-   DoUpdate();
+   if (GetFile("/proc/meminfo") == "/proc/meminfo")
+      DoUpdate();
 }
    
    
 void MemoryWidget::DoUpdate()
 {
    // Cool, /proc/meminfo is parsable by NTreeReader
-   NTreeReader read(GetFile("/proc/meminfo"));
+   NTreeReader read(GetFile("/proc/meminfo", false));
    size_t val;
    size_t total, free, buffer, cache, totalswap, freeswap;
    total = totalswap = 1;
