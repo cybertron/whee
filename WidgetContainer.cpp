@@ -124,10 +124,20 @@ string WidgetContainer::GetFile(QString path, bool startproc)
          opts << "ControlPath=" + temppath + "/%r@%h:%p";
       }
       opts << "PasswordAuthentication=no";
+      opts << "StrictHostKeyChecking=no";
+      opts << "UserKnownHostsFile=/dev/null";
       QString optstring = "";
       for (size_t i = 0; i < opts.size(); ++i)
       {
          optstring += " -o " + opts[i];
+      }
+      if (idfile != "")
+      {
+         optstring += " -i " + idfile;
+      }
+      if (username != "")
+      {
+         optstring += " -l " + username;
       }
       QString ssh = "ssh" + optstring + " ";
       QString command = ssh + host + " cat " + path;

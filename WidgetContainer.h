@@ -29,6 +29,8 @@ class WidgetContainer
       long remaining;
       bool controlmaster;
       QString host;
+      QString username;
+      QString idfile;
       QString temppath;
 
       WidgetContainer(QLabel*);

@@ -233,11 +233,15 @@ void whee::CreateMemoryWidget(const NTreeReader& curr, int offx, int offy)
       SetLabelFont(curr, label);
       w.type = WidgetContainer::Text;
    }
-   else
+   else if (qtype == "image")
    {
       SetLabelPixmap(curr, label);
       SetWidgetOrientation(curr, w);
       w.type = WidgetContainer::Image;
+   }
+   else if (qtype == "graph")
+   {
+      w.type = WidgetContainer::Graph;
    }
    
    string stat;
@@ -649,8 +653,13 @@ void whee::SetHost(const NTreeReader& curr, WidgetContainer& w)
 {
    string host = "localhost";
    curr.ReadLine(host, "Host");
-   QString qhost = host.c_str();
-   w.host = qhost;
+   w.host = host.c_str();
+   string idfile = "";
+   curr.ReadLine(idfile, "IDFile");
+   w.idfile = idfile.c_str();
+   string username = "";
+   curr.ReadLine(idfile, "Username");
+   w.username = username.c_str();
 }
 
 

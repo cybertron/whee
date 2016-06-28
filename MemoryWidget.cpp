@@ -66,7 +66,7 @@ void MemoryWidget::DoUpdate()
    
    // /proc/meminfo gives values in KB, for the sake of converting it's easier to have it in bytes
    val = val * KB() / unit;
-   
+
    if (type == Text)
    {
       QString text = format;
