@@ -86,6 +86,8 @@ void WidgetContainer::DrawGraph(float percent)
    QLine line(width - 2, lastpos, width - 1, currpos);
    painter.setPen(palette.color(QPalette::WindowText));
    painter.drawLine(line);
+   QLine baseline(0, height - 1, width, height - 1);
+   painter.drawLine(baseline);
    painter.end();
    lastpercent = percent;
    
