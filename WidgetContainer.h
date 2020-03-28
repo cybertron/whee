@@ -2,7 +2,7 @@
 #define WIDGETCONTAINER_H
 
 #include <boost/shared_ptr.hpp>
-#include <QtGui/QLabel>
+#include <QtWidgets/QLabel>
 #include <QFont>
 #include <iostream>
 #include "NTreeReader.h"

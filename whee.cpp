@@ -6,8 +6,11 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QScreen>
 #include <iostream>
 #include <stdlib.h>
+#include <chrono>
+#include <thread>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include "MemoryWidget.h"
@@ -46,7 +49,7 @@ whee::whee(string fn) : background(NULL), filename(fn), currlayout(NULL)
 void whee::CreateTemp()
 {
    QString tmp = "/tmp/wheeXXXXXX";
-   temppath = mkdtemp(tmp.toAscii().data());
+   temppath = mkdtemp(tmp.toLatin1().data());
 }
 
 
@@ -63,7 +66,7 @@ void whee::closeEvent(QCloseEvent* event)
 void whee::RemoveTemp()
 {
    QString command = "rm -rf " + temppath;
-   system(command.toAscii().data());
+   system(command.toLatin1().data());
 }
 
 
@@ -792,7 +795,9 @@ void whee::UpdateBackground()
       WId id = desktop->winId();
       int savewidth = width();
       setGeometry(x() - 1, y(), 1, height());
-      QPixmap pixmap = QPixmap::grabWindow(id, x() + 1, y(), savewidth, height());
+      // Sleep to make sure we don't accidentally grab our own window
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(id, x() + 1, y(), savewidth, height());
       setGeometry(x() + 1, y(), savewidth, height());
       background->setPixmap(pixmap);
    }
@@ -840,5 +845,3 @@ void whee::closeClicked()
 {
    close();
 }
-
-#include "whee.moc"

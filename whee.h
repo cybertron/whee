@@ -3,8 +3,8 @@
 
 #include <list>
 #include <string>
-#include <QtGui/QDialog>
-#include <QtGui/QLabel>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
 #include <QTimer>
 #include <QFont>
 #include <QMouseEvent>

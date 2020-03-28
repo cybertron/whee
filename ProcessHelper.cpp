@@ -64,5 +64,3 @@ void ProcessHelper::ProcessFinished(int retcode, QProcess::ExitStatus status)
    error = "";
    active = false;
 }
-
-#include "ProcessHelper.moc"

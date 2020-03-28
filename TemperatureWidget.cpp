@@ -44,6 +44,3 @@ void TemperatureWidget::ProcessFinished(QString text)
    }
    text = "";
 }
-
-#include "TemperatureWidget.moc"
-
