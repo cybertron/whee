@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QSizePolicy>
 #include <QScreen>
 #include <iostream>
 #include <stdlib.h>
@@ -26,7 +27,7 @@ using std::endl;
 
 whee::whee(string fn) : background(NULL), filename(fn), currlayout(NULL)
 {
-   setWindowFlags(Qt::FramelessWindowHint);
+   setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
    // Causes issues in some non-compositing WM's (notably Fluxbox)
    if (QX11Info::isCompositingManagerRunning())
       setAttribute(Qt::WA_TranslucentBackground);
@@ -122,6 +123,11 @@ void whee::ReadConfig()
    SetXProps(x, y, width, height, strut);
    
    setGeometry(x, y, width, height);
+   setMinimumHeight(height);
+   setMaximumHeight(height);
+   setMinimumWidth(width);
+   setMaximumWidth(width);
+   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 
@@ -692,8 +698,6 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
    Atom net_wm_state_sticky = XInternAtom(display, "_NET_WM_STATE_STICKY", false);
    Atom net_wm_state_below = XInternAtom(display, "_NET_WM_STATE_BELOW", false);
    Atom net_wm_state_skip_taskbar = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", false);
-   Atom net_wm_window_type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", false);
-   Atom net_wm_window_type_desktop = XInternAtom(display, "_NET_WM_TYPE_DESKTOP", false);
    Atom net_wm_desktop = XInternAtom(display, "_NET_WM_DESKTOP", false);
    
    long atoms[5];
@@ -729,7 +733,7 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
       data[11] = 0;
       // Apparently Fluxbox doesn't support partial struts:-(
       XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 4);
-      XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
+      XChangeProperty(display, window, net_wm_strut_partial, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
    }
    else if (qstrut == "bottom")
    {
@@ -746,7 +750,7 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
       data[10] = x;
       data[11] = x + width;
       XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 4);
-      XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
+      XChangeProperty(display, window, net_wm_strut_partial, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
    }
    else if (qstrut == "left")
    {
@@ -763,7 +767,7 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
       data[10] = 0;
       data[11] = 0;
       XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 4);
-      XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
+      XChangeProperty(display, window, net_wm_strut_partial, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
    }
    else if (qstrut == "right")
    {
@@ -780,7 +784,7 @@ void whee::SetXProps(int x, int y, int width, int height, string strut)
       data[10] = 0;
       data[11] = 0;
       XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 4);
-      XChangeProperty(display, window, net_wm_strut, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
+      XChangeProperty(display, window, net_wm_strut_partial, XA_CARDINAL, 32, PropModeReplace, (unsigned char *) data, 12);
    }
 }
 
